@@ -1,47 +1,205 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width,
+                   initial-scale=1.0,
+                   maximum-scale=1.0,
+                   user-scalable=no">
+
     <title>Farewell - Shyam</title>
 
     <style>
-        html, body {
+        html,
+        body {
             margin: 0;
+            padding: 0;
             width: 100%;
             height: 100%;
             background: #000;
             overflow: hidden;
         }
 
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
         video {
             width: 100vw;
             height: 100vh;
             object-fit: contain;
+            background: #000;
+            display: block;
+        }
+
+        #soundBtn {
+            position: fixed;
+            left: 50%;
+            bottom: 40px;
+            transform: translateX(-50%);
+
+            z-index: 1000;
+
+            padding: 16px 30px;
+
+            border: none;
+            border-radius: 35px;
+
+            background: rgba(255, 255, 255, 0.95);
+            color: #000;
+
+            font-size: 18px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 4px 20px rgba(0, 0, 0, 0.6);
+
+            transition: transform 0.15s ease;
+        }
+
+        #soundBtn:active {
+            transform: translateX(-50%) scale(0.94);
+        }
+
+        /* Mobile */
+        @media (max-width: 600px) {
+            #soundBtn {
+                bottom: 30px;
+                padding: 14px 26px;
+                font-size: 17px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-<video id="video" autoplay muted playsinline controls>
-    <source
-        src="https://res.cloudinary.com/emicicgu/video/upload/v1790321113/video.mp4"
-        type="video/mp4">
-</video>
+    <!-- Farewell Video -->
+    <video
+        id="video"
+        autoplay
+        muted
+        playsinline
+        controls>
 
-<script>
-const video = document.getElementById("video");
+        <source
+            src="https://res.cloudinary.com/emicicgu/video/upload/v1790321113/video.mp4"
+            type="video/mp4">
 
-document.addEventListener("click", () => {
-    video.muted = false;
-    video.play();
+        Your browser does not support video playback.
 
-    if (video.requestFullscreen) {
-        video.requestFullscreen();
-    }
-}, { once: true });
-</script>
+    </video>
+
+
+    <!-- Sound Button -->
+    <button id="soundBtn">
+        🔊 Turn Sound On
+    </button>
+
+
+    <script>
+
+        const video = document.getElementById("video");
+        const soundBtn = document.getElementById("soundBtn");
+
+
+        // --------------------------------
+        // Start video automatically
+        // --------------------------------
+
+        video.muted = true;
+
+        video.play().catch(function(error) {
+            console.log("Autoplay blocked:", error);
+        });
+
+
+        // --------------------------------
+        // Turn sound ON
+        // --------------------------------
+
+        soundBtn.addEventListener("click", async function() {
+
+            // Unmute
+            video.muted = false;
+
+            video.volume = 1;
+
+
+            // Play video
+            try {
+
+                await video.play();
+
+            } catch (error) {
+
+                console.log("Playback error:", error);
+
+            }
+
+
+            // --------------------------------
+            // Fullscreen
+            // --------------------------------
+
+            try {
+
+                if (video.requestFullscreen) {
+
+                    await video.requestFullscreen();
+
+                }
+
+                else if (video.webkitRequestFullscreen) {
+
+                    video.webkitRequestFullscreen();
+
+                }
+
+                else if (video.msRequestFullscreen) {
+
+                    video.msRequestFullscreen();
+
+                }
+
+            } catch (error) {
+
+                console.log("Fullscreen error:", error);
+
+            }
+
+
+            // --------------------------------
+            // Hide button
+            // --------------------------------
+
+            soundBtn.style.display = "none";
+
+        });
+
+
+        // --------------------------------
+        // If video becomes muted again,
+        // show the sound button
+        // --------------------------------
+
+        video.addEventListener("volumechange", function() {
+
+            if (video.muted) {
+
+                soundBtn.style.display = "block";
+
+            }
+
+        });
+
+    </script>
 
 </body>
 </html>
